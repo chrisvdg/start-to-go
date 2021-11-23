@@ -9,9 +9,8 @@
     - [Why is Go](#why-is-go)
     - [Who uses Go](#who-uses-go)
     - [Why use Go](#why-use-go)
+    - [Go for other purposes](#go-for-other-purposes)
   - [Install Go](#install-go)
-    - [How to install](#how-to-install)
-    - [Go environment](#go-environment)
   - [Programming basics](#programming-basics)
     - [Entry point](#entry-point)
     - [Variables](#variables)
@@ -78,6 +77,7 @@ Another important principle is to keep the concepts orthogonal. Methods can be i
 
 - Google: As they developed it, it makes sense that they use the language throughout the company.
 - Moby (opensource part of Docker) (https://github.com/moby)
+- Kubernetes (https://github.com/kubernetes)
 - Uber (https://github.com/uber)
 - Twitch (https://github.com/twitchtv)
 - Sendgrid (https://github.com/sendgrid)
@@ -97,12 +97,15 @@ For the mascot of course!
 ![](./assets/gopher1.webp)  
 ![](./assets/gopher2.png)
 
+
+### Go for other purposes
+
+Go is not only a language to write server backend code, it can also be used for embedded programming with the [TinyGo](https://tinygo.org/) compiler and has a WebAssembly target to be used in frontend.
+
 ## Install Go
 
-### How to install
+https://go.dev/doc/install
 
-
-### Go environment
 
 ## Programming basics
 
@@ -170,3 +173,4 @@ For the mascot of course!
 - [Go blog](https://go.dev/blog/)
 - [Go time podcast](https://changelog.com/gotime)
 - [Gophercon Youtube](https://www.youtube.com/c/GopherAcademy)
+- [JustForFunc youtube tutorials by Francesc Campoy](https://www.youtube.com/c/JustForFunc)
