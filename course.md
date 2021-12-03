@@ -11,12 +11,14 @@
     - [Why use Go](#why-use-go)
     - [Go for other purposes](#go-for-other-purposes)
   - [Install Go](#install-go)
+    - [Go Playground](#go-playground)
   - [Programming basics](#programming-basics)
     - [Entry point](#entry-point)
     - [Variables](#variables)
       - [Declaration and assignment](#declaration-and-assignment)
-      - [Pointer vs reference](#pointer-vs-reference)
+      - [Slices](#slices)
     - [Functions](#functions)
+      - [Pointer vs values](#pointer-vs-values)
     - [Keywords](#keywords)
     - [Standard types](#standard-types)
   - [Structs](#structs)
@@ -24,7 +26,8 @@
     - [Methodes](#methodes)
     - [Interfaces](#interfaces)
   - [Exercise basic](#exercise-basic)
-  - [Importing libs](#importing-libs)
+  - [Project Packages](#project-packages)
+  - [Importing packages](#importing-packages)
     - [Go get](#go-get)
     - [Import](#import)
     - [Library documentation (Go doc, go.dev)](#library-documentation-go-doc-godev)
@@ -107,17 +110,186 @@ Go is not only a language to write server backend code, it can also be used for 
 https://go.dev/doc/install
 
 
+### Go Playground
+
+Alternatively there is an online tool to play around with the Go language.
+It has some limitations: no support for importing external packages, so only (most) of the standard library can be used, limited execution time and resource usage, ...
+
+https://go.dev/play
+
 ## Programming basics
 
 ### Entry point
+
+The compiler will look for the the function `main` (no args not return values) of package `main` to start running the program
+```go
+package main
+
+func main(){}
+```
 
 ### Variables
 
 #### Declaration and assignment
 
-#### Pointer vs reference
+A variable can be declared by using the keyword `var` and can then be assigned with `=`
+
+```go
+var i int // By default this will be 0
+i = 1
+```
+
+This can also be done in one line
+```go
+var i int = 1
+```
+
+Even shorter, `:=` can be used to declare and assign at the same time
+The type will be assumed from the value
+```go
+i := 1 // int
+f := 1.0 // float64
+s := "1" // string
+```
+
+Multiple variables can be declared and assigned in a single line
+```go
+i, j := "test", 1
+```
+
+#### Slices
+
+To go a bit more into detail about working with arrays in Go.
+
+Most of the time a `Slice` is used, which is an abstraction of an array that allow to have a flexible length array.
+A `Slice` can be seen as a dynamic view on an array
+
+```go
+// Declaration of a fixed size array
+var i [4]int
+
+// Declaration of a dynamic size slice
+var j []int
+
+// Declaration of slice with make keyword
+length := 4 // 
+k = make([]int, length)
+
+// // Declaration of slice with make keyword with capacity
+capacity := 7 // size of the array being used under the hood
+k = make([]int, length, capacity)
+
+
+// Print length of array/slice
+fmt.Println(len(k))
+
+// Print capacity of array/slice 
+fmt.Println(cap(k))
+```
+
+The capacity passed in the make command will not limit the amount of items being able to be put in the slice. It is used to set the length of the initial array so memory can be used a bit more efficiently as it provides control of the underlying array.
+
+When using the `append` function to add another item to the slice and it would exceed the current capacity, it would increase capacity of the underlying array. (doubles up to 1024, afterwards capacity is increased with 1/4th of the current capacity)
+
+https://go.dev/play/p/HKYTBlZIk7I
+
 
 ### Functions
+
+Functions can be defined with the `func` keyword.
+Arguments for the functions are defined by stating `name` and `type`. They are always named and are required to by passed when called
+```go
+func greet(name string) {
+  fmt.Printf("Hello: %s!\n", name)
+}
+```
+
+When the function returns a variable, the type needs to be added at the end of the signature:
+```go
+func create_greet_string(name string) string {
+  return fmt.Sprintf("Hello: %s!", name)
+}
+```
+
+It is possible to pass a variable amount of arguments, that can only be done as the argument and be of the same type.
+This can be done with a `variadic` paramenter (... prefix).
+`names` inside the function will be a slice of the defined type.
+
+```go
+package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func main() {
+  s := concat_names("hello world", "foo bar", "lorem ipsum")
+  fmt.Println(s) // Hello World, Foo Bar, Lorem Ipsum
+}
+
+func concat_names(names ...string) string {
+	names = capitalise_names(names...) // Explode into individual items
+	return strings.Join(names, ", ")
+}
+
+func capitalise_names(names ...string) []string {
+	for i, name := range names {
+		names[i] = strings.Title(name)
+	}
+	return names
+}
+```
+
+#### Pointer vs values
+
+Variables in Go can be defined/passed as pointer or (a copy of) the value
+
+Pointer type (*Type)
+```go
+var i *int
+i = new(int) // Create a new int pointer that is not nil
+```
+
+Value of the pointer type (*variable)
+```go
+*i = 5
+```
+
+Get pointer of value (&variable)
+```go
+i := 5 // normal int
+j := &i // pointer to i
+```
+
+Example:
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	i := 5
+
+	setZeroValue(i)
+	fmt.Println(i)
+
+	setZeroPointer(&i)
+	fmt.Println(i)
+}
+
+func setZeroPointer(i *int) {
+	*i = 0
+}
+
+func setZeroValue(i int) {
+	// Doesn't change the value in main as it's not a pointer
+	i = 0
+}
+```
 
 ### Keywords
 
@@ -134,7 +306,10 @@ https://go.dev/doc/install
 ## Exercise basic
 
 
-## Importing libs
+## Project Packages
+
+
+## Importing packages
 
 ### Go get
 
