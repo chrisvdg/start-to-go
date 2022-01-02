@@ -17,10 +17,17 @@
     - [Variables](#variables)
       - [Declaration and assignment](#declaration-and-assignment)
       - [Slices](#slices)
+      - [Overview basic types](#overview-basic-types)
     - [Functions](#functions)
       - [Pointer vs values](#pointer-vs-values)
-    - [Keywords](#keywords)
-    - [Standard types](#standard-types)
+      - [Named return values](#named-return-values)
+    - [Flow control](#flow-control)
+      - [If/else](#ifelse)
+      - [For](#for)
+      - [While](#while)
+      - [Switch](#switch)
+      - [Goto](#goto)
+      - [Defer](#defer)
   - [Structs](#structs)
     - ['Classes'](#classes)
     - [Methodes](#methodes)
@@ -132,7 +139,7 @@ func main(){}
 
 #### Declaration and assignment
 
-A variable can be declared by using the keyword `var` and can then be assigned with `=`
+A variable can be declared by using the keyword `var` / `const` and can then be assigned with `=`
 
 ```go
 var i int // By default this will be 0
@@ -141,7 +148,7 @@ i = 1
 
 This can also be done in one line
 ```go
-var i int = 1
+const int = 1
 ```
 
 Even shorter, `:=` can be used to declare and assign at the same time
@@ -192,6 +199,25 @@ The capacity passed in the make command will not limit the amount of items being
 When using the `append` function to add another item to the slice and it would exceed the current capacity, it would increase capacity of the underlying array. (doubles up to 1024, afterwards capacity is increased with 1/4th of the current capacity)
 
 https://go.dev/play/p/HKYTBlZIk7I
+
+
+#### Overview basic types
+
+bool
+
+string
+
+int  int8  int16  int32  int64
+uint uint8 uint16 uint32 uint64 uintptr
+
+byte // alias for uint8
+
+rune // alias for int32
+     // represents a Unicode code char
+
+float32 float64
+
+complex64 complex128
 
 
 ### Functions
@@ -291,9 +317,213 @@ func setZeroValue(i int) {
 }
 ```
 
-### Keywords
+#### Named return values
 
-### Standard types
+Return values of a function/method can be named. A return without arguments will then return the named variables (naked return).
+
+```go
+// Note that when two or more consecutive named function parameters share a type,
+// you can omit the type from all but the last. 
+func split(num int) (x, y int) {
+	x = num * 4 / 9
+	y = num - x
+	return
+}
+```
+
+Personally not a fan, I find it acceptable for short functions, but can get confusing in longer functions.
+
+### Flow control
+
+#### If/else
+
+If/else works just like many other languages
+
+```go
+i := 1
+if i == 1 {
+  fmt.Println("i is one.")
+} else if i == 2 {
+  fmt.Println("i is two.")
+} else {
+  fmt.Println("i is more than two.")
+}
+```
+
+#### For
+
+Basic for:
+```go
+sum := 0
+for i := 0; i < 10; i++ {
+  sum += i
+}
+fmt.Println(sum)
+
+```
+
+Range over slice:
+```go
+pow := []int{1, 2, 4, 8, 16, 32, 64, 128}
+for i, v := range pow {
+  fmt.Printf("Index %d = %d\n", i, v)
+}
+
+// Index can be ignored
+for _, v := range pow {
+  fmt.Printf("%d\n", v)
+}
+```
+
+The `continue` and `break` keywords can be used for management of the flow inside the for
+```go
+pow := 0
+for i := 0; i < 1000; i++ {
+  if pow < 2 {
+    pow++
+    continue
+  } else if pow > 1000 {
+    break
+  }
+  pow = pow * pow
+}
+
+fmt.Println(pow)
+```
+
+#### While
+
+There is no `while` keyword in Go. Instead the `for` keyword in used to do `while` operations in other languages.
+
+```go
+sum := 1
+for sum < 1000 {
+  sum += sum
+}
+fmt.Println(sum)
+
+// Infinite loop
+for {
+  fmt.Println("Bird is the word!")
+}
+```
+
+#### Switch
+
+Switch cases evaluate cases from top to bottom, stopping when a case succeeds.
+
+``` go
+import (
+	"fmt"
+	"runtime"
+)
+
+func main() {
+	fmt.Print("Go runs on ")
+	switch os := runtime.GOOS; os {
+	case "darwin":
+		fmt.Println("OS X.")
+	case "linux":
+		fmt.Println("Linux.")
+	default:
+		fmt.Printf("%s.\n", os)
+	}
+}
+```
+
+The `switch` itself does not need a condition, making it an option to cleanly write long if/elses:
+```go
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	t := time.Now()
+	switch {
+	case t.Hour() < 12:
+		fmt.Println("Good morning!")
+	case t.Hour() < 17:
+		fmt.Println("Good afternoon.")
+	default:
+		fmt.Println("Good evening.")
+	}
+}
+```
+
+A switch `case` only executes code inside of it's scope and does not execute cases underneath it. (No need to end the `case` with `break`)
+If this is desired, `fallthrough` can be explicitly called at the end of the case.
+
+```go
+i := 45
+switch {
+case i < 10:
+    fmt.Println("i is less than 10")
+    fallthrough
+case i < 50:
+    fmt.Println("i is less than 50")
+    fallthrough
+case i < 100:
+    fmt.Println("i is less than 100")
+}
+```
+
+#### Goto
+
+The `goto` keyword is used to jump to a label.
+It is not used often as there are usually better and cleaner ways to implement this kind of logic,
+but can come in handy for low(er) level programming for example.
+
+```go
+i := 0
+
+LABEL:
+i = i * 2
+
+if i < 100 {
+  i++
+  goto LABEL
+}
+fmt.Println(i)
+```
+
+```go
+var a int = 10
+
+LOOP:
+for a < 20 {
+  if a == 15 {
+    // skip the iteration
+    a = a + 1
+    goto LOOP
+  }
+  fmt.Printf("Value of a: %d\n", a)
+  a++
+}
+```
+
+#### Defer
+
+The `defer` keyword waits with the execution of the function argument until the surrounding function returns.
+Used often for cleanup.
+
+A function can have multiple `defer`s, the last called `defer` will be executed first when the surrounding function returns.
+```go
+package main
+
+import "fmt"
+
+func main() {
+	defer fmt.Println("Defer 1")
+	defer fmt.Println("Defer 2")
+	defer fmt.Println("Defer 3")
+}
+// Prints:
+// Defer 3
+// Defer 2
+// Defer 1
+```
+
 
 ## Structs
 
@@ -346,6 +576,6 @@ func setZeroValue(i int) {
 ## Interesting sources of information
 
 - [Go blog](https://go.dev/blog/)
-- [Go time podcast](https://changelog.com/gotime)
 - [Gophercon Youtube](https://www.youtube.com/c/GopherAcademy)
-- [JustForFunc youtube tutorials by Francesc Campoy](https://www.youtube.com/c/JustForFunc)
+- [Go time podcast](https://changelog.com/gotime)
+- [JustForFunc youtube tutorials by Francesc Campoy](https://www.youtube.com/c/JustForFunc) (Note: no recent content)
