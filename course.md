@@ -1,9 +1,9 @@
 <!-- no toc --> 
-# Go introduction
+# Start to Go
 
 ## Table of content
 
-- [Go introduction](#go-introduction)
+- [Start to Go](#start-to-go)
   - [Table of content](#table-of-content)
   - [What is Go](#what-is-go)
     - [Why is Go](#why-is-go)
