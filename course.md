@@ -672,6 +672,7 @@ If your method can take a value of any type, an empty interface can be used: `in
 
 ## Interesting sources
 
+- [Go main portal](https://go.dev)
 - [Go tour](https://go.dev/tour)
 - [Go blog](https://go.dev/blog/)
 - [Gophercon Youtube](https://www.youtube.com/c/GopherAcademy)
