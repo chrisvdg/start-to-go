@@ -28,29 +28,23 @@
       - [Switch](#switch)
       - [Goto](#goto)
       - [Defer](#defer)
-  - [Structs](#structs)
-    - ['Classes'](#classes)
+  - [Custom types](#custom-types)
     - [Methodes](#methodes)
     - [Interfaces](#interfaces)
-  - [Exercise basic](#exercise-basic)
   - [Project Packages](#project-packages)
   - [Importing packages](#importing-packages)
     - [Go get](#go-get)
     - [Import](#import)
+  - [Creating/ managing packages](#creating-managing-packages)
+  - [(Unit) Testing](#unit-testing)
     - [Library documentation (Go doc, go.dev)](#library-documentation-go-doc-godev)
     - [Dependency management](#dependency-management)
     - [Vendor](#vendor)
     - [Go mod basics](#go-mod-basics)
-  - [Exercise reading file](#exercise-reading-file)
   - [Webserver with std library](#webserver-with-std-library)
   - [Webserver with Gorilla mux](#webserver-with-gorilla-mux)
   - [Exercise web server](#exercise-web-server)
-  - [Concurrency](#concurrency)
-    - [Go keyword](#go-keyword)
-    - [Sync](#sync)
-    - [Channels](#channels)
-  - [Exercise concurrency](#exercise-concurrency)
-  - [Interesting sources of information](#interesting-sources-of-information)
+  - [Interesting sources](#interesting-sources)
 
 ## What is Go
 
@@ -525,25 +519,139 @@ func main() {
 ```
 
 
-## Structs
+## Custom types
 
-### 'Classes'
+Custom types in Go are defined as a `struct` which is a collection of fields.
+
+```go
+type Point struct {
+  X int
+  Y int
+}
+
+func main() {
+	v := Point{1, 2}
+	v.X = 4
+	fmt.Println(v.X, v.Y)
+  // Prints:
+  // 4 2
+}
+```
+https://go.dev/play/p/XpFqDP4cP6L
+
+Note that capitalization matters here as lowercase structs and fields will not be accessible when called on from outside the package.
 
 ### Methodes
 
+Methods can be attached to types defined within the package. To do this, simply add a receiver argument to a function.
+
+As with types and functions, only capitalized methodes will be accessible from outside the package.
+
+```go
+type Point struct {
+  X int
+  Y int
+}
+
+func (v Point) String() string {
+  return fmt.Sprintf("Coordinates are: X=%d, Y=%d", v.X, v.Y)
+}
+
+func main() {
+	v := Point{1, 2}
+	fmt.Println(v.String())
+  // Prints:
+  // Coordinates are: X=1, Y=2
+}
+```
+https://go.dev/play/p/lv1aqS_nE2P
+
+To be able to modify the type's fields from within the method, the type receiver needs to be of a pointer type.
+
+
+```go
+func (v *Point) Forward(steps int) {
+  v.Y = v.Y + steps
+}
+
+func main() {
+	v := Point{1, 2}
+  v.Forward(5)
+	fmt.Println(v.String())
+  // Prints:
+  // Coordinates are: X=1, Y=7
+}
+```
+https://go.dev/play/p/AxPNGNbvYUX
+
+It is good practice to keep the type receiver the same for all methodes of the type. e.g. all 
+
+
 ### Interfaces
 
-## Exercise basic
+To allow multiple types to be used as different implementations to operate on, `interface` types can be used as an abstraction.
 
+An interface type is defined as a set of method signatures that define the behavior of the value. The value of an interface type can hold any value that implement those methodes.
+
+
+```go
+type CanGoForward interface {
+	Forward(steps int)
+}
+
+type Point struct {
+	X int
+	Y int
+}
+
+func (v *Point) Forward(steps int) {
+	v.Y = v.Y + steps
+}
+
+type FloatPoint struct {
+	X float64
+	Y float64
+}
+
+func (v *FloatPoint) Forward(steps int) {
+	v.Y = v.Y + float64(steps)
+}
+
+func MoveForwards(point CanGoForward, steps int) {
+	point.Forward(steps)
+}
+
+func main() {
+	v := Point{1, 2}
+	w := FloatPoint{3.0, 4.0}
+	steps := 5
+
+  // Note that we pass the pointer to the type as the implemented method is a pointer receiver
+  // And if we mix the type receiver, it may be confusing what to pass as interface value
+	MoveForwards(&v, steps)
+	MoveForwards(&w, steps)
+
+	fmt.Println(v.Y)
+	fmt.Println(w.Y)
+}
+```
+https://go.dev/play/p/Tok5ZEoqB3x
+
+The value for the interface can be `nil`, if then the method is call on the `nil `interface, it will cause a run-time error. Therefor if a value cannot be guaranteed, a `nil` check may be needed.
+
+If your method can take a value of any type, an empty interface can be used: `interface{}`. For example `fmt.Print` and `fmt.Println`  takes an empty interface, not necessarily a string.
 
 ## Project Packages
-
 
 ## Importing packages
 
 ### Go get
 
 ### Import
+
+## Creating/ managing packages
+
+## (Unit) Testing
 
 ### Library documentation (Go doc, go.dev)
 
@@ -553,7 +661,6 @@ func main() {
 
 ### Go mod basics
 
-## Exercise reading file
 
 
 ## Webserver with std library
@@ -563,18 +670,9 @@ func main() {
 ## Exercise web server
 
 
-## Concurrency
+## Interesting sources
 
-### Go keyword
-
-### Sync
-
-### Channels
-
-## Exercise concurrency
-
-## Interesting sources of information
-
+- [Go tour](https://go.dev/tour)
 - [Go blog](https://go.dev/blog/)
 - [Gophercon Youtube](https://www.youtube.com/c/GopherAcademy)
 - [Go time podcast](https://changelog.com/gotime)
