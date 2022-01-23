@@ -33,9 +33,7 @@
     - [Interfaces](#interfaces)
   - [Package management](#package-management)
     - [Importing packages](#importing-packages)
-    - [Go get](#go-get)
-    - [Import](#import)
-  - [Creating/ managing packages](#creating-managing-packages)
+    - [Making your own packages](#making-your-own-packages)
   - [(Unit) Testing](#unit-testing)
     - [Library documentation (Go doc, go.dev)](#library-documentation-go-doc-godev)
     - [Dependency management](#dependency-management)
@@ -669,13 +667,74 @@ Does not work `go get https://github.com/pkg/errors`
 ---
 
 ### Importing packages
-t 
 
-### Go get
+To use external packages to be used in the project, they first need to be installed locally before being able to be referenced.
 
-### Import
+Packages and it's documentation can be looked up on the go docs page: https://pkg.go.dev/
 
-## Creating/ managing packages
+It can then be installed using the `go get <package>` command
+
+```sh
+# Import latest tag or master/main if no tag
+go get github.com/pkg/errors
+
+# Import specific version (git tag/branch/commit hash)
+go get github.com/pkg/errors@v0.9.0
+
+# Import package or get latest if already installed
+go get -u github.com/pkg/errors
+```
+
+Then the package can be used used by importing it like:
+```go
+package main
+
+import (
+	// Direct package import (no git domain prefix etc.) are usually standard library
+	"log"
+
+  // Importing the installed package to this file
+	"github.com/pkg/errors"
+)
+
+func main() {
+	err := alwaysError()
+	if err != nil {
+		log.Fatal("Something went wrong: ", err)
+	}
+}
+
+func alwaysError() error {
+  // Use the imported package
+	return errors.New("I always return an error")
+}
+```
+
+If the package name can cause a collision or another name is required, it is possible to alias the imported package
+
+```go
+import errorPkg "github.com/pkg/errors"
+
+func alwaysError() error {
+	return errorPkg.New("I always return an error")
+}
+```
+
+### Making your own packages
+
+Creating your own packages is as simple as initiating your Go project as described above and pushed onto the master/main branch of that repo. If it's a pure library, there is no need for a `main.go` file and the package name should be the name of the repository and should not be `main`.
+
+Keeping the same name will make the resource path and package name consistent
+
+```go
+import "github.com/pkg/errors"
+
+// If the package name would be `pkgErrors` then this import would have to be used as:
+func alwaysError() error {
+	return pkgErrors.New("I always return an error")
+}
+// As the resource path and package name do not match, it makes it hard and confusing to know where the package was imported from
+```
 
 ## (Unit) Testing
 
