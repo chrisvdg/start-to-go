@@ -35,10 +35,9 @@
     - [Importing packages](#importing-packages)
     - [Making your own packages](#making-your-own-packages)
   - [(Unit) Testing](#unit-testing)
-    - [Library documentation (Go doc, go.dev)](#library-documentation-go-doc-godev)
-    - [Dependency management](#dependency-management)
-    - [Vendor](#vendor)
-    - [Go mod basics](#go-mod-basics)
+  - [Project documentation](#project-documentation)
+    - [Doc strings](#doc-strings)
+    - [Package documentation (Go doc, go.dev)](#package-documentation-go-doc-godev)
   - [Interesting sources](#interesting-sources)
 
 ## What is Go
@@ -738,15 +737,15 @@ func alwaysError() error {
 
 ## (Unit) Testing
 
-### Library documentation (Go doc, go.dev)
+## Project documentation
 
-### Dependency management
+### Doc strings
 
-### Vendor
+Good reference documentation
 
-### Go mod basics
+### Package documentation (Go doc, go.dev)
 
-
+Can provide higher level documentation to give context to the package and examples on how to use it.
 
 ## Interesting sources
 
