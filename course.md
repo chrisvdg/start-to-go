@@ -31,8 +31,8 @@
   - [Custom types](#custom-types)
     - [Methodes](#methodes)
     - [Interfaces](#interfaces)
-  - [Project Packages](#project-packages)
-  - [Importing packages](#importing-packages)
+  - [Package management](#package-management)
+    - [Importing packages](#importing-packages)
     - [Go get](#go-get)
     - [Import](#import)
   - [Creating/ managing packages](#creating-managing-packages)
@@ -41,9 +41,6 @@
     - [Dependency management](#dependency-management)
     - [Vendor](#vendor)
     - [Go mod basics](#go-mod-basics)
-  - [Webserver with std library](#webserver-with-std-library)
-  - [Webserver with Gorilla mux](#webserver-with-gorilla-mux)
-  - [Exercise web server](#exercise-web-server)
   - [Interesting sources](#interesting-sources)
 
 ## What is Go
@@ -128,6 +125,13 @@ package main
 
 func main(){}
 ```
+
+To run Go code:
+```sh
+go run <filename>.go
+```
+
+Hello world example: https://go.dev/play/p/MAohLsrz7JQ
 
 ### Variables
 
@@ -641,9 +645,31 @@ The value for the interface can be `nil`, if then the method is call on the `nil
 
 If your method can take a value of any type, an empty interface can be used: `interface{}`. For example `fmt.Print` and `fmt.Println`  takes an empty interface, not necessarily a string.
 
-## Project Packages
+## Package management
 
-## Importing packages
+To split up go code into logical parts, it is possible to separate them into packages.
+
+To be able to create and use packages within your project/module you can use the command `go mod init`
+
+If the directory is a `git` repository, it will automatically generate project/module name.
+If not, a custom name can be provived with `go mod init my_project`.
+
+By convention the naming should be: `<git host domain>`/`<user/organisation name>`/`<project name>`.  
+E.g: `github.com/chrisvdg/start-to-go`
+If you want your project to be easily downloaded/installed via the Go tools, it is important to follow this convention.
+
+---
+**Note**
+The naming is a URL within the Go environments and should not be seen as a web URL to the git repository of the project.
+
+E.g.:   
+Will work `go get github.com/pkg/errors`  
+Does not work `go get https://github.com/pkg/errors`
+
+---
+
+### Importing packages
+t 
 
 ### Go get
 
@@ -661,13 +687,6 @@ If your method can take a value of any type, an empty interface can be used: `in
 
 ### Go mod basics
 
-
-
-## Webserver with std library
-
-## Webserver with Gorilla mux
-
-## Exercise web server
 
 
 ## Interesting sources
