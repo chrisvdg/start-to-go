@@ -35,6 +35,8 @@
     - [Importing packages](#importing-packages)
     - [Making your own packages](#making-your-own-packages)
   - [(Unit) Testing](#unit-testing)
+    - [Structure](#structure)
+    - [Example](#example)
   - [Project documentation](#project-documentation)
     - [Doc strings](#doc-strings)
     - [Package documentation (Go doc, go.dev)](#package-documentation-go-doc-godev)
@@ -736,6 +738,80 @@ func alwaysError() error {
 ```
 
 ## (Unit) Testing
+
+### Structure
+
+Unit tests in Go are written in the same package (folder) as the code it's written in. They are written in separate files that end with `_test.go`. By convention it is prefixed by the filename where the code that's being tested resides in.  
+E.g. functionality written in `calculations.go` has it's unit tests written in `calculations_test.go`.
+
+For the package name of the file there are 2 options, either have the package name of the package you're working in, which will give you access to all private/unexported types, variables, constants, ...  
+The other option is to use `<package_name>_test`. This will behave as another package where you import the package and run your tests on it's public functions and types.
+
+The latter method is preferred as you test the code as it was a consumer of the code where it can be noticed if something is lacking or not feeling right in the package's API.  
+If small pieces of very complex internal code needs to be tested, the first method can be used.
+
+### Example
+
+Say we have a folder within a project named `greeting` that contains a function returning a string dependent on the provided time.  
+Within this folder we have 2 files, `greeting.go` containing the logic and `greeting_test.go` containing the unit tests.
+
+Test themselves should start with `Test...`, they should be public for the test framework to be able to call them and only accept a variable of the pointer type `*testing.T` to conform to the test framework's interface.
+
+greeting.go: 
+```go
+package greeting
+
+import "time"
+
+func Greet(t time.Time) string {
+	switch {
+	case t.Hour() < 12:
+		return "Good morning!"
+	case t.Hour() < 17:
+		return "Good afternoon."
+  case t.Hour() < 22:
+    return "Good evening."
+	default:
+		return "Good night."
+	}
+}
+```
+
+greeting_test.go:
+```go
+package greeting_test
+
+import (
+	"<path_in_project>/greeting"
+	"testing"
+	"time"
+)
+
+// TestMorningGreeting tests 1 case of greeting that expects a morning response
+func TestMorningGreeting(t *testing.T) {
+	testTime, err := time.Parse("15:04:05", "11:00:00")
+	if err != nil {
+		t.Fatal("Failed to set up time for test")
+	}
+	want := "Good morning!"
+
+	got := greeting.Greet(testTime)
+
+	if want != got {
+		t.Errorf("Expected '%s', but got '%s'", want, got)
+	}
+}
+
+
+
+```
+
+To run the test:
+```sh
+go test ./... # Run all the go tests in this directory and all the sub packages.
+```
+
+
 
 ## Project documentation
 
