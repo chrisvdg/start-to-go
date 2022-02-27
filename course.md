@@ -39,7 +39,7 @@
 		- [Example](#example)
 	- [Project documentation](#project-documentation)
 		- [Doc strings](#doc-strings)
-		- [Package documentation (Go doc, go.dev)](#package-documentation-go-doc-godev)
+		- [Package documentation](#package-documentation)
 			- [Examples](#examples)
 	- [Interesting sources](#interesting-sources)
 
@@ -896,7 +896,7 @@ go install golang.org/x/tools/cmd/godoc@latest
 go get go install golang.org/x/tools/cmd/godoc
 ```
 
-### Package documentation (Go doc, go.dev)
+### Package documentation
 
 To provide more context for your package, it is possible to add package level documentation for it.  
 Simply add a comment section above the package declaration in main file of the project, usually a file called `main.go` or `<package_folder_name>.go`
