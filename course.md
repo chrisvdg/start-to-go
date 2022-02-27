@@ -40,6 +40,7 @@
 	- [Project documentation](#project-documentation)
 		- [Doc strings](#doc-strings)
 		- [Package documentation (Go doc, go.dev)](#package-documentation-go-doc-godev)
+			- [Examples](#examples)
 	- [Interesting sources](#interesting-sources)
 
 ## What is Go
@@ -859,16 +860,45 @@ func TestMorningGreetingTable(t *testing.T) {
 }
 ```
 
-
 ## Project documentation
 
 ### Doc strings
 
-Good reference documentation
+Good reference documentation for your project can be added by simply adding a comment to the functions, types, variables, const, interfaces, ...
+These comments are added above the signature.  
+It used to be the case that the comment should start with the name of the function, ... It is not enforced anymore however it still remains the convention.
+
+```go
+// Greet returns a string that can be used as greeting based on the provided time
+func Greet(t time.Time) string {
+	...
+}
+```
+
+To check the docs of your project locally, from the root of your project run:
+```sh
+godoc -http=:6000
+```
+
+Then open your browser on [localhost:6060](http://localhost:6060) and search for your project or go to it directly `http://localhost:6060/pkg/<package name>`
+
+If your project is uploaded to your git repo and is public, the docs can also be read on the [Go platform when looking at a package](https://pkg.go.dev/).  
+E.g.: https://pkg.go.dev/github.com/pkg/errors#As
+
+If godoc is not installed:
+```sh
+# Go mod mode
+go install golang.org/x/tools/cmd/godoc@latest
+
+# Older Go versions where go get would also install the package binary
+go get go install golang.org/x/tools/cmd/godoc
+```
 
 ### Package documentation (Go doc, go.dev)
 
-Can provide higher level documentation to give context to the package and examples on how to use it.
+Package document
+
+#### Examples
 
 ## Interesting sources
 
