@@ -106,6 +106,9 @@ Go is not only a language to write server backend code, it can also be used for 
 
 https://go.dev/doc/install
 
+When using an IDE make sure to also install the Go plugin if available.
+The go team maintains the [`gopls`](https://github.com/golang/tools/tree/master/gopls) language server that implements the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/) that most popular IDEs support.
+
 
 ### Go Playground
 
@@ -802,8 +805,6 @@ func TestMorningGreeting(t *testing.T) {
 	}
 }
 
-
-
 ```
 
 To run the test:
@@ -811,6 +812,52 @@ To run the test:
 go test ./... # Run all the go tests in this directory and all the sub packages.
 ```
 
+When testing multiple cases that can be executed by the same test, the table drive tests pattern can be used:
+```go
+func TestMorningGreetingTable(t *testing.T) {
+	// test represents the input (and result data) needed for a single test case
+	type test struct {
+		timestamp  string
+		timeFormat string
+		want       string
+	}
+
+	// Declare the list of test cases and already populate it
+	tests := []test{
+		{
+			timestamp:  "11:00:00",
+			timeFormat: "15:04:05",
+			want:       "Good morning!",
+		},
+		{
+			timestamp:  "12:00:00",
+			timeFormat: "15:04:05",
+			want:       "Good afternoon.",
+		},
+		{
+			timestamp:  "16:00:00",
+			timeFormat: "15:04:05",
+			want:       "Good afternoon.",
+		},
+		{
+			timestamp:  "17:00:00",
+			timeFormat: "15:04:05",
+			want:       "Good evening.",
+		},
+	}
+
+	for _, tc := range tests {
+		testTime, err := time.Parse(tc.timeFormat, tc.timestamp)
+		if err != nil {
+			t.Fatal("Failed to set up time for test")
+		}
+		got := greeting.Greet(testTime)
+		if tc.want != got {
+			t.Errorf("Expected '%s', but got '%s'", tc.want, got)
+		}
+	}
+}
+```
 
 
 ## Project documentation
