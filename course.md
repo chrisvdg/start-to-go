@@ -875,6 +875,8 @@ func Greet(t time.Time) string {
 }
 ```
 
+![](./assets/doc_1.png)  
+
 To check the docs of your project locally, from the root of your project run:
 ```sh
 godoc -http=:6000
@@ -896,9 +898,13 @@ go get go install golang.org/x/tools/cmd/godoc
 
 ### Package documentation (Go doc, go.dev)
 
-Package document
+To provide more context for your package, it is possible to add package level documentation for it.  
+Simply add
+
 
 #### Examples
+
+To make the usage of the package more clear, it is possible to add exampled 
 
 ## Interesting sources
 
