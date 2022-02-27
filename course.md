@@ -875,14 +875,14 @@ func Greet(t time.Time) string {
 }
 ```
 
-![](./assets/doc_1.png)  
+![Function docstring shown in godoc](./assets/doc_1.png)  
 
 To check the docs of your project locally, from the root of your project run:
 ```sh
 godoc -http=:6000
 ```
 
-Then open your browser on [localhost:6060](http://localhost:6060) and search for your project or go to it directly `http://localhost:6060/pkg/<package name>`
+Then open your browser on [localhost:6060](http://localhost:6060) and search for your project or go to it directly `http://localhost:6060/pkg/<package path>`
 
 If your project is uploaded to your git repo and is public, the docs can also be read on the [Go platform when looking at a package](https://pkg.go.dev/).  
 E.g.: https://pkg.go.dev/github.com/pkg/errors#As
@@ -899,12 +899,56 @@ go get go install golang.org/x/tools/cmd/godoc
 ### Package documentation (Go doc, go.dev)
 
 To provide more context for your package, it is possible to add package level documentation for it.  
-Simply add
+Simply add a comment section above the package declaration in main file of the project, usually a file called `main.go` or `<package_folder_name>.go`
+If it is not clear to determine the main file or the written documentation is quite extensive and could start to be distracting in the code, a `doc.go` file can be added where to documentation can be provided.
 
+```go
+// Greeting is a package that provides functions to easy generate greeting strings
+package greeting
+...
+```
+
+![Package documentation shown in godoc](./assets/doc_2.png)  
+ 
 
 #### Examples
 
-To make the usage of the package more clear, it is possible to add exampled 
+To make the usage of the package more clear, it is possible to add examples. Examples appear in the documentation but are also compiled when running tests for the package.  
+Therefore the examples are actually part of your tests and outdated examples will fail your test suite, enforcing to keep the examples up to date.
+
+By convention this is added in an `example_test.go` and instead of functions starting with `Test`, they start with `Example` and do not take any input arguments.
+If the name after `Example` matches a function it will be mapped to that function. If multiple examples need to be added, they can be differentiated by adding an underscore after the function name and a concise description of the example, e.g.: `ExampleGreet_extended(){...}`
+
+
+```go
+package greeting_test
+
+import (
+	"fmt"
+	"<package path>/greeting"
+	"log"
+	"time"
+)
+
+func ExampleGreet() {
+	testTime, err := time.Parse("15:04:05", "11:00:00")
+	if err != nil {
+		log.Fatalf("Failed to parse time: %s", err)
+	}
+
+	greet := greeting.Greet(testTime)
+
+	fmt.Println(greet)
+
+	// Output:
+	// Good morning!
+}
+```
+
+![Example shown in godoc](./assets/doc_3.png) 
+
+More information about documentation examples can be read here: [https://go.dev/blog/examples](https://go.dev/blog/examples)
+
 
 ## Interesting sources
 
