@@ -72,7 +72,7 @@ The designers felt it should be possible to have efficiency, the safety, and the
 
 Throughout its design, the designers have tried to reduce clutter and complexity. Everything needs to be declared just once. Initialization is expressive, automatic, and easy to use. Syntax is clean and light on keywords
 
-Another important principle is to keep the concepts orthogonal. Methods can be implemented for any type; structures represent data while interfaces represent abstraction; and so on. Orthogonality makes it easier to understand what happens when things combine. 
+Another important principle is to keep the concepts orthogonal (small set of primitives). Methods can be implemented for any type; structures represent data while interfaces represent abstraction; and so on. Orthogonality makes it easier to understand what happens when things combine. 
 
 ### Who uses Go
 
@@ -175,31 +175,33 @@ A `Slice` can be seen as a dynamic view on an array
 ```go
 // Declaration of a fixed size array
 var i [4]int
+fmt.Println("Length i:", len(i))
+fmt.Println("Capacity i:", cap(i))
 
 // Declaration of a dynamic size slice
 var j []int
+fmt.Println("Length j:", len(j))
+fmt.Println("Capacity j:", cap(j))
 
 // Declaration of slice with make keyword
-length := 4 // 
-k = make([]int, length)
+length := 4 //
+k := make([]int, length)
+fmt.Println("Length k:", len(k))
+fmt.Println("Capacity k:", cap(k))
 
 // // Declaration of slice with make keyword with capacity
 capacity := 7 // size of the array being used under the hood
 k = make([]int, length, capacity)
-
-
-// Print length of array/slice
-fmt.Println(len(k))
-
-// Print capacity of array/slice 
-fmt.Println(cap(k))
+fmt.Println("Length k:", len(k))
+fmt.Println("Capacity k:", cap(k))
 ```
+https://go.dev/play/p/JlbNMoIn7g8
 
 The capacity passed in the make command will not limit the amount of items being able to be put in the slice. It is used to set the length of the initial array so memory can be used a bit more efficiently as it provides control of the underlying array.
 
 When using the `append` function to add another item to the slice and it would exceed the current capacity, it would increase capacity of the underlying array. (doubles up to 1024, afterwards capacity is increased with 1/4th of the current capacity)
 
-https://go.dev/play/p/HKYTBlZIk7I
+https://go.dev/play/p/2QTVDxZJl8m
 
 
 #### Overview basic types
@@ -227,16 +229,18 @@ Functions can be defined with the `func` keyword.
 Arguments for the functions are defined by stating `name` and `type`. They are always named and are required to by passed when called
 ```go
 func greet(name string) {
-  fmt.Printf("Hello: %s!\n", name)
+  fmt.Printf("Hello %s!\n", name)
 }
 ```
+https://go.dev/play/p/UuPCz1TlvyM
 
 When the function returns a variable, the type needs to be added at the end of the signature:
 ```go
 func create_greet_string(name string) string {
-  return fmt.Sprintf("Hello: %s!", name)
+  return fmt.Sprintf("Hello %s!", name)
 }
 ```
+https://go.dev/play/p/9nW_YfnZbbZ
 
 It is possible to pass a variable amount of arguments, that can only be done as the argument and be of the same type.
 This can be done with a `variadic` paramenter (... prefix).
@@ -267,6 +271,7 @@ func capitalise_names(names ...string) []string {
 	return names
 }
 ```
+https://go.dev/play/p/ru6xGNNYuEU
 
 #### Pointer vs values
 
@@ -302,10 +307,10 @@ func main() {
 	i := 5
 
 	setZeroValue(i)
-	fmt.Println(i)
+	fmt.Println("Zero set in function with value argument:", i)
 
 	setZeroPointer(&i)
-	fmt.Println(i)
+	fmt.Println("Zero set in function with pointer argument:", i)
 }
 
 func setZeroPointer(i *int) {
@@ -317,6 +322,7 @@ func setZeroValue(i int) {
 	i = 0
 }
 ```
+https://go.dev/play/p/0C8-7F-HpcH
 
 #### Named return values
 
@@ -350,6 +356,7 @@ if i == 1 {
   fmt.Println("i is more than two.")
 }
 ```
+https://go.dev/play/p/qSbjm32swm1
 
 #### For
 
@@ -360,8 +367,8 @@ for i := 0; i < 10; i++ {
   sum += i
 }
 fmt.Println(sum)
-
 ```
+https://go.dev/play/p/kz2a_rXGZaC
 
 Range over slice:
 ```go
@@ -370,11 +377,12 @@ for i, v := range pow {
   fmt.Printf("Index %d = %d\n", i, v)
 }
 
-// Index can be ignored
+// Index can be ignored with '_'
 for _, v := range pow {
   fmt.Printf("%d\n", v)
 }
 ```
+https://go.dev/play/p/NDkAZB-qqHH
 
 The `continue` and `break` keywords can be used for management of the flow inside the for
 ```go
@@ -391,6 +399,7 @@ for i := 0; i < 1000; i++ {
 
 fmt.Println(pow)
 ```
+https://go.dev/play/p/UrH5X7xVdyB
 
 #### While
 
@@ -408,12 +417,15 @@ for {
   fmt.Println("Bird is the word!")
 }
 ```
+https://go.dev/play/p/YkakLizkNzu
 
 #### Switch
 
 Switch cases evaluate cases from top to bottom, stopping when a case succeeds.
 
 ``` go
+package main
+
 import (
 	"fmt"
 	"runtime"
@@ -431,9 +443,12 @@ func main() {
 	}
 }
 ```
+https://go.dev/play/p/g3UONxv0CCn
 
 The `switch` itself does not need a condition, making it an option to cleanly write long if/elses:
 ```go
+package main
+
 import (
 	"fmt"
 	"time"
@@ -451,6 +466,7 @@ func main() {
 	}
 }
 ```
+https://go.dev/play/p/NT19bQTpqAi
 
 A switch `case` only executes code inside of it's scope and does not execute cases underneath it. (No need to end the `case` with `break`)
 If this is desired, `fallthrough` can be explicitly called at the end of the case.
@@ -468,6 +484,7 @@ case i < 100:
     fmt.Println("i is less than 100")
 }
 ```
+https://go.dev/play/p/BRJbl__cpsL
 
 #### Goto
 
@@ -487,21 +504,27 @@ if i < 100 {
 }
 fmt.Println(i)
 ```
+https://go.dev/play/p/hTGke7JZ4Bx
+
+
+It is also possible to continue a labeled for loop instead of the closest one.
 
 ```go
-var a int = 10
-
-LOOP:
-for a < 20 {
-  if a == 15 {
-    // skip the iteration
-    a = a + 1
-    goto LOOP
-  }
-  fmt.Printf("Value of a: %d\n", a)
-  a++
+sum := 0
+LABELLED_LOOP:
+for i := 0; i < 10; i++ {
+	sum += i
+	for j := 0; j < 10; j++ {
+		sum += j
+		if j > 2 && sum > 10 {
+			continue LABELLED_LOOP
+		}
+	}
 }
+
+fmt.Println(sum)
 ```
+https://go.dev/play/p/ybo95goU2wI
 
 #### Defer
 
@@ -510,21 +533,16 @@ Used often for cleanup.
 
 A function can have multiple `defer`s, the last called `defer` will be executed first when the surrounding function returns.
 ```go
-package main
+defer fmt.Println("Defer 1")
+defer fmt.Println("Defer 2")
+defer fmt.Println("Defer 3")
 
-import "fmt"
-
-func main() {
-	defer fmt.Println("Defer 1")
-	defer fmt.Println("Defer 2")
-	defer fmt.Println("Defer 3")
-}
 // Prints:
 // Defer 3
 // Defer 2
 // Defer 1
 ```
-
+https://go.dev/play/p/P9XizyTdAbV
 
 ## Custom types
 
@@ -714,6 +732,7 @@ func alwaysError() error {
 	return errors.New("I always return an error")
 }
 ```
+https://go.dev/play/p/cWXN5LF-OLc
 
 If the package name can cause a collision or another name is required, it is possible to alias the imported package
 
@@ -724,6 +743,7 @@ func alwaysError() error {
 	return errorPkg.New("I always return an error")
 }
 ```
+https://go.dev/play/p/m1xZNSQem4K
 
 ### Making your own packages
 
