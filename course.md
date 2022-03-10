@@ -972,6 +972,7 @@ More information about documentation examples can be read here: [https://go.dev/
 
 ## Interesting sources
 
+- [Go proverbs](https://go-proverbs.github.io/)
 - [Go main portal](https://go.dev)
 - [Go tour](https://go.dev/tour)
 - [Go blog](https://go.dev/blog/)
