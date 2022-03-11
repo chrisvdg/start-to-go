@@ -26,7 +26,7 @@
 			- [For](#for)
 			- [While](#while)
 			- [Switch](#switch)
-			- [Goto](#goto)
+			- [Labels and goto](#labels-and-goto)
 			- [Defer](#defer)
 	- [Custom types](#custom-types)
 		- [Methodes](#methodes)
@@ -122,7 +122,7 @@ https://go.dev/play
 
 ### Entry point
 
-The compiler will look for the the function `main` (no args not return values) of package `main` to start running the program
+The compiler will look for the the function `main` (no args nor return values) of package `main` to start running the program
 ```go
 package main
 
@@ -147,7 +147,7 @@ var i int // By default this will be 0
 i = 1
 ```
 
-This can also be done in one line
+Declaration and assigning can also be done in one line
 ```go
 const int = 1
 ```
@@ -159,11 +159,13 @@ i := 1 // int
 f := 1.0 // float64
 s := "1" // string
 ```
+https://go.dev/play/p/ZnNr-f5h94p
 
 Multiple variables can be declared and assigned in a single line
 ```go
 i, j := "test", 1
 ```
+https://go.dev/play/p/g-NEbDDL-o0
 
 #### Slices
 
@@ -195,13 +197,35 @@ k = make([]int, length, capacity)
 fmt.Println("Length k:", len(k))
 fmt.Println("Capacity k:", cap(k))
 ```
-https://go.dev/play/p/JlbNMoIn7g8
+https://go.dev/play/p/2QTVDxZJl8m
 
 The capacity passed in the make command will not limit the amount of items being able to be put in the slice. It is used to set the length of the initial array so memory can be used a bit more efficiently as it provides control of the underlying array.
 
 When using the `append` function to add another item to the slice and it would exceed the current capacity, it would increase capacity of the underlying array. (doubles up to 1024, afterwards capacity is increased with 1/4th of the current capacity)
 
-https://go.dev/play/p/2QTVDxZJl8m
+```go
+var a []int
+fmt.Println(len(a), cap(a))
+
+for i := 0; i < 10; i++ {
+	a = append(a, i)
+	fmt.Println(len(a), cap(a))
+}
+
+// Output
+// 0 0
+// 1 1
+// 2 2
+// 3 4
+// 4 4
+// 5 8
+// 6 8
+// 7 8
+// 8 8
+// 9 16
+// 10 16
+```
+https://go.dev/play/p/HKYTBlZIk7I
 
 
 #### Overview basic types
@@ -210,18 +234,33 @@ bool
 
 string
 
-int  int8  int16  int32  int64
-uint uint8 uint16 uint32 uint64 uintptr
+uintptr		an unsigned integer large enough to store the uninterpreted bits of a pointer value
 
-byte // alias for uint8
+int			usually 32 bits wide on 32-bit systems and 64 bits wide on 64-bit systems. Should be used by default unless you have a specific reason to use a sized and/or unsigned integer type.  
+int8        the set of all signed  8-bit integers (-128 to 127)  
+int16       the set of all signed 16-bit integers (-32768 to 32767)  
+int32       the set of all signed 32-bit integers (-2147483648 to 2147483647)  
+int64       the set of all signed 64-bit integers (-9223372036854775808 to 9223372036854775807)  
 
-rune // alias for int32
-     // represents a Unicode code char
+uint		same size as int  
+uint8       the set of all unsigned  8-bit integers (0 to 255)  
+uint16      the set of all unsigned 16-bit integers (0 to 65535)  
+uint32      the set of all unsigned 32-bit integers (0 to 4294967295)  
+uint64      the set of all unsigned 64-bit integers (0 to 18446744073709551615)
 
-float32 float64
+float32     the set of all IEEE-754 32-bit floating-point numbers  
+float64     the set of all IEEE-754 64-bit floating-point numbers
 
-complex64 complex128
+complex64   the set of all complex numbers with float32 real and imaginary parts  
+complex128  the set of all complex numbers with float64 real and imaginary parts
 
+byte        alias for uint8  
+rune        alias for int32
+
+
+New for 1.18:
+
+any			alias for interface{}
 
 ### Functions
 
@@ -286,6 +325,7 @@ i = new(int) // Create a new int pointer that is not nil
 Value of the pointer type (*variable)
 ```go
 *i = 5
+fmt.Println(i, *i)
 ```
 
 Get pointer of value (&variable)
@@ -293,6 +333,8 @@ Get pointer of value (&variable)
 i := 5 // normal int
 j := &i // pointer to i
 ```
+https://go.dev/play/p/m0S86CoB4Dg
+
 
 Example:
 
@@ -383,6 +425,15 @@ for _, v := range pow {
 }
 ```
 https://go.dev/play/p/NDkAZB-qqHH
+
+Range over maps:
+```go
+kvs := map[string]string{"a": "apple", "b": "banana"}
+for k, v := range kvs {
+	fmt.Printf("%s -> %s\n", k, v)
+}
+```
+https://go.dev/play/p/H7F7UzJElQp
 
 The `continue` and `break` keywords can be used for management of the flow inside the for
 ```go
@@ -486,7 +537,7 @@ case i < 100:
 ```
 https://go.dev/play/p/BRJbl__cpsL
 
-#### Goto
+#### Labels and goto
 
 The `goto` keyword is used to jump to a label.
 It is not used often as there are usually better and cleaner ways to implement this kind of logic,
@@ -825,7 +876,6 @@ func TestMorningGreeting(t *testing.T) {
 		t.Errorf("Expected '%s', but got '%s'", want, got)
 	}
 }
-
 ```
 
 To run the test:
@@ -976,6 +1026,7 @@ More information about documentation examples can be read here: [https://go.dev/
 - [Go main portal](https://go.dev)
 - [Go tour](https://go.dev/tour)
 - [Go blog](https://go.dev/blog/)
+- [Go spec](https://tip.golang.org/ref/spec)
 - [Gophercon Youtube](https://www.youtube.com/c/GopherAcademy)
 - [Go time podcast](https://changelog.com/gotime)
 - [JustForFunc youtube tutorials by Francesc Campoy](https://www.youtube.com/c/JustForFunc) (Note: no recent content)
