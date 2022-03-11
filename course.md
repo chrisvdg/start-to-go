@@ -273,6 +273,8 @@ func greet(name string) {
 ```
 https://go.dev/play/p/UuPCz1TlvyM
 
+Go print formatting: https://pkg.go.dev/fmt#hdr-Printing
+
 When the function returns a variable, the type needs to be added at the end of the signature:
 ```go
 func create_greet_string(name string) string {
