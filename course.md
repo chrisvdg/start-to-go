@@ -913,7 +913,7 @@ If godoc is not installed:
 go install golang.org/x/tools/cmd/godoc@latest
 
 # Older Go versions where go get would also install the package binary
-go get go install golang.org/x/tools/cmd/godoc
+go get golang.org/x/tools/cmd/godoc
 ```
 
 ### Package documentation
