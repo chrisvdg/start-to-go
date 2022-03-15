@@ -45,7 +45,7 @@
 
 ## What is Go
 
-Go also known as Golang for searchability and domain (https://golang.org),  
+Go also known as Golang for searchability and domain (https://golang.org now https://go.dev),  
 is a statically typed, compiled programming language designed at Google by Robert Griesemeer (JS V8), Rob Pike(UTF-8, Acme, Unix, Plan 9) and Ken Thompson (B, UTF-8, Unix, Plan 9).
 
 It's main focus is to be a language that makes it easy to build simple, reliable and efficient software.
